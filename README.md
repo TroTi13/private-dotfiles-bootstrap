@@ -28,7 +28,7 @@ git clone <this-repo-url>
 cd private-dotfiles-bootstrap
 
 # Option 2: Download just the bootstrap file using curl
-curl -O https://raw.githubusercontent.com/<your-username>/private-dotfiles-bootstrap/main/.bootstrap
+curl -O https://raw.githubusercontent.com/TroTI13/private-dotfiles-bootstrap/main/.bootstrap
 ```
 
 ### Step 2: Make the Script Executable
