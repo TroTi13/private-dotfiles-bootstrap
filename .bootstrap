@@ -1,0 +1,71 @@
+#!/bin/zsh
+
+echo "⚠️ Warning, this is a destructive script and will overwrite your current dotfiles, intended for new machines."
+echo "This will install xcode tools and close a private repo afterwards."
+echo "If you don't have a github token, you can't continue."
+
+echo "--------------------------------"
+echo "Are you sure you want to continue? (y/n)"
+read -s CONTINUE
+if [ "$CONTINUE" != "y" ]; then
+    echo "Exiting..."
+    exit 1
+fi
+
+# install xcode tools
+echo "📦 Installing Xcode tools..."
+xcode-select --install
+echo "✅ Xcode tools installed"
+
+# fix git config
+echo "🔒 Fixing git config..."
+# ask for git name
+echo -n "Enter your Git name: "
+read -s GIT_NAME
+if [ -z "$GIT_NAME" ]; then
+    echo "❌ Error: Git name is required"
+    exit 1
+fi
+# ask for git email
+echo -n "Enter your Git email: "
+read -s GIT_EMAIL
+if [ -z "$GIT_EMAIL" ]; then
+    echo "❌ Error: Git email is required"
+    exit 1
+fi
+git config --global user.name "$GIT_NAME"
+git config --global user.email "$GIT_EMAIL"
+echo "✅ Git config fixed"
+
+# ask for github token
+echo "📝 Asking for GitHub token, find your token here: https://github.com/settings/tokens"
+echo -n "Enter your GitHub token: "
+read -s TOKEN
+if [ -z "$TOKEN" ]; then
+    echo "❌ Error: GitHub token is required"
+    exit 1
+fi
+echo "✅ GitHub token entered"
+
+# clone the repository
+echo "📥 Cloning the private osx-dotfiles repository..."
+git clone https://"$TOKEN"@github.com/TroTi13/osx-dotfiles.git ~/dotfiles
+echo "✅ Private osx-dotfiles repository cloned"
+
+unset TOKEN
+
+# run the init script
+echo "🚀 Running the init script..."
+~/dotfiles/init.sh
+echo "✅ Init script completed"
+
+# cleanup
+echo "🧹 Do you want to cleanup the private repository? (y/n)"
+read -s CLEANUP
+if [ "$CLEANUP" = "y" ]; then
+    echo "🧹 Cleaning up the private repository..."
+    rm -rf ~/dotfiles
+    echo "✅ Private repository cleaned up"
+fi
+
+echo "✅ All done!"
